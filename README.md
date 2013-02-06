@@ -4,7 +4,7 @@ PROJECT (Pub Quiz)
 Team Members:
 ---------------
 
-Jack : Implement reading of quiestions from xml to array
+Jack : Implement reading of questions from xml to array
 
 Josh : Setup base server and implement network
 
