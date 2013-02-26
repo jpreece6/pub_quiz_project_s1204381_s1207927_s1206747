@@ -1,48 +1,43 @@
-package server;
+package client;
 
 import io.IO;
 
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 import packet.Packet;
 import packet.PacketHeaders;
 
-public class Client implements Runnable {
+public class Listener implements Runnable {
 
 	private Socket clientSocket;
-	private ObjectOutputStream toClient;
-	private ObjectInputStream fromClient;
 	
-	public Client(Socket client) {
+	private ObjectInputStream fromServer;
+	
+	public Listener(Socket client) {
 		this.clientSocket = client;
 	}
 
 	@Override
 	public void run() {
-
-		listen();
 		
-	}
-	
-	public void listen() {
 		for (;;) {
 			
 			try {
-				
+			
 				Packet receivedPacket;
-				fromClient = new ObjectInputStream(clientSocket.getInputStream());
-				receivedPacket = (Packet) fromClient.readObject();
+				fromServer = new ObjectInputStream(clientSocket.getInputStream());
+				receivedPacket = (Packet) fromServer.readObject();
 				if (receivedPacket.getHeader() == PacketHeaders.unknown) {
 					IO.println("Client: " + receivedPacket.getClientId() + "\nError unknown data");
 				}
 				
 			} catch (Exception ex) {
 				ex.printStackTrace();
-				IO.println("Error Client Disconnected!");
-				break;
 			}
+			
 		}
+		
 	}
+
 }
