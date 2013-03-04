@@ -2,17 +2,15 @@ package client;
 
 import io.IO;
 
-import java.io.ObjectInputStream;
+import java.io.DataInputStream;
 import java.net.Socket;
-
-import packet.Packet;
-import packet.PacketHeaders;
+import java.nio.ByteBuffer;
 
 public class Listener implements Runnable {
 
 	private Socket clientSocket;
 	
-	private ObjectInputStream fromServer;
+	private DataInputStream fromServer;
 	
 	public Listener(Socket client) {
 		this.clientSocket = client;
@@ -25,12 +23,16 @@ public class Listener implements Runnable {
 			
 			try {
 			
-				Packet receivedPacket;
-				fromServer = new ObjectInputStream(clientSocket.getInputStream());
-				receivedPacket = (Packet) fromServer.readObject();
-				if (receivedPacket.getHeader() == PacketHeaders.unknown) {
+				byte[] receivedPacket = new byte[1024];
+				fromServer = new DataInputStream(clientSocket.getInputStream());
+				fromServer.read(receivedPacket);
+				
+				int idPak = ByteBuffer.wrap(receivedPacket, 0, 4).getInt();
+				IO.println(Integer.toString(idPak));
+				
+				/*if (receivedPacket.getHeader() == PacketHeaders.unknown) {
 					IO.println("Client: " + receivedPacket.getClientId() + "\nError unknown data");
-				}
+				}*/
 				
 			} catch (Exception ex) {
 				ex.printStackTrace();

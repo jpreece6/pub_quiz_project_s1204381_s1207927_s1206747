@@ -2,16 +2,15 @@ package client;
 
 import io.IO;
 
-import java.io.ObjectOutputStream;
+import java.io.DataOutputStream;
 import java.net.Socket;
 
 import packet.Packet;
-import packet.PacketHeaders;
 
 public class Sender implements Runnable {
 
 	private Packet data;
-	private ObjectOutputStream toServer;
+	private DataOutputStream toServer;
 	private Socket clientSocket;
 	
 	public Sender(Socket client, Packet dataBuf) {
@@ -24,9 +23,9 @@ public class Sender implements Runnable {
 
 		try {
 			
-			toServer = new ObjectOutputStream(clientSocket.getOutputStream());
-			Packet packet = new Packet(10, PacketHeaders.unknown);
-			toServer.writeObject(packet);
+			toServer = new DataOutputStream(clientSocket.getOutputStream());
+			Packet packet = data;
+			toServer.write(packet.getDataForTransmit());
 			
 			IO.println("Packet Sent!");
 			

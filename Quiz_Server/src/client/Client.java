@@ -1,18 +1,17 @@
 package client;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import packet.Packet;
 import packet.PacketHeaders;
+import data.Question;
 
 public class Client {
 
 	private Socket clientSocket;
-	private String serverAddress = "localhost";
+	private String serverAddress = "192.168.1.64";
 	private int serverPort = 2013;
 	
 	private static final int NUM_THREADS = 2;
@@ -29,7 +28,8 @@ public class Client {
 	
 	public Client() {
 		
-		packet = new Packet(10, PacketHeaders.unknown);
+		Question q = new Question("hello");
+		packet = new Packet(10, PacketHeaders.command, q);
 		
 		try {
 			clientSocket = new Socket(serverAddress, serverPort);
@@ -43,7 +43,8 @@ public class Client {
 	}
 
 	public void disconnectClient() {
-		Packet Discon = new Packet(10, PacketHeaders.command);
+		Question q = new Question("hello");
+		Packet Discon = new Packet(10, PacketHeaders.unknown, q);
 		sender = new Sender(clientSocket, Discon);
 	}
 

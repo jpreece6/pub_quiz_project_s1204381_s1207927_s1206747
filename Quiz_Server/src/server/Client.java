@@ -2,20 +2,22 @@ package server;
 
 import io.IO;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import packet.Packet;
 import packet.PacketHeaders;
+import data.Question;
 
 public class Client implements Runnable {
 
 	private Socket clientSocket;
-	private ObjectOutputStream toClient;
-	private ObjectInputStream fromClient;
+	private DataOutputStream toClient;
+	private DataInputStream fromClient;
 	private Runnable sender;
 	
 	private ExecutorService exe = Executors.newSingleThreadExecutor();
@@ -27,15 +29,16 @@ public class Client implements Runnable {
 	@Override
 	public void run() {
 
-		/*try {
+		try {
 			
-			Packet p = new Packet(11, PacketHeaders.unknown);
+			Question q = new Question("hello");
+			Packet p = new Packet(11, PacketHeaders.command, q);
 			sender = new Sender(clientSocket, p);
 			exe.execute(sender);
 			
 		} catch (Exception ex) {
 			
-		}*/
+		}
 		
 
 		listen();
@@ -47,14 +50,19 @@ public class Client implements Runnable {
 			
 			try {
 				
-				Packet receivedPacket;
-				fromClient = new ObjectInputStream(clientSocket.getInputStream());
-				receivedPacket = (Packet) fromClient.readObject();
-				if (receivedPacket.getHeader() == PacketHeaders.unknown) {
+				byte[] receivedPacket = new byte[1024];
+				fromClient = new DataInputStream(clientSocket.getInputStream());
+				fromClient.read(receivedPacket);
+			
+				int idPak = ByteBuffer.wrap(receivedPacket, 4, 4).getInt();
+				IO.println(Integer.toString(idPak));
+
+				
+				/*if (receivedPacket.getHeader() == PacketHeaders.unknown) {
 					IO.println("Client: " + receivedPacket.getClientId() + "\nError unknown data");
 				} else if (receivedPacket.getHeader() == PacketHeaders.command) {
-					
-				}
+					IO.println("Client: " + receivedPacket.getMsgData());
+				}*/
 				
 			} catch (Exception ex) {
 				ex.printStackTrace();
