@@ -16,6 +16,9 @@ public class Packet {
 	private byte[] packetHeader;
 	private byte[] packet;
 	
+	public Packet(byte[] receivedPacket) {
+		splitBytes(receivedPacket);
+	}
 	
 	public Packet(int id, PacketHeaders header, String msg) {
 		try {
@@ -40,6 +43,24 @@ public class Packet {
 			byte_id = ByteBuffer.allocate(4).putInt(id).array();
 			byte_header = ByteBuffer.allocate(4).putInt(header.ordinal()).array();
 			byte_data = convertToByteArray(questions.getQuestionArray());
+		
+			packetHeader = new byte[byte_id.length + byte_header.length];
+			packet = new byte[packetHeader.length + 1010];
+			System.arraycopy(byte_id, 0, packetHeader, 0, byte_id.length);
+			System.arraycopy(byte_header, 0, packetHeader, byte_id.length, byte_header.length);
+			System.arraycopy(packetHeader, 0, packet, 0, packetHeader.length);
+			System.arraycopy(byte_data, 0, packet, packetHeader.length, byte_data.length);
+			
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	public Packet(int id, PacketHeaders header, String[] results) {
+		try {
+			byte_id = ByteBuffer.allocate(4).putInt(id).array();
+			byte_header = ByteBuffer.allocate(4).putInt(header.ordinal()).array();
+			byte_data = convertToByteArray(results);
 		
 			packetHeader = new byte[byte_id.length + byte_header.length];
 			packet = new byte[packetHeader.length + 1010];
@@ -80,5 +101,23 @@ public class Packet {
 	
 	public byte[] getDataForTransmit() {
 		return packet;
+	}
+	
+	public void splitBytes(byte[] data) {
+		System.arraycopy(data, 0, byte_id, 0, 4);
+		System.arraycopy(data, 4, byte_header, 0, 4);
+		System.arraycopy(data, 8, byte_data, 0, 1010);
+	}
+	
+	public int getID() {
+		return ByteBuffer.wrap(byte_id).getInt();
+	}
+	
+	public int getHeader() {
+		return ByteBuffer.wrap(byte_header).getInt();
+	}
+	
+	public String getData() {
+		return new String(byte_data);
 	}
 }

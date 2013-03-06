@@ -11,6 +11,7 @@ import java.util.concurrent.Executors;
 
 import packet.Packet;
 import packet.PacketHeaders;
+import quiz.Game;
 import data.Question;
 
 public class Client implements Runnable {
@@ -22,24 +23,16 @@ public class Client implements Runnable {
 	
 	private ExecutorService exe = Executors.newSingleThreadExecutor();
 	
-	public Client(Socket client) {
+	private Game game;
+	private boolean resultsReady = false;
+	
+	public Client(Socket client, Game newGame) {
 		this.clientSocket = client;
+		this.game = newGame;
 	}
 
 	@Override
 	public void run() {
-
-		try {
-			
-			Question q = new Question("hello");
-			Packet p = new Packet(11, PacketHeaders.command, q);
-			sender = new Sender(clientSocket, p);
-			exe.execute(sender);
-			
-		} catch (Exception ex) {
-			
-		}
-		
 
 		listen();
 		
@@ -53,22 +46,41 @@ public class Client implements Runnable {
 				byte[] receivedPacket = new byte[1024];
 				fromClient = new DataInputStream(clientSocket.getInputStream());
 				fromClient.read(receivedPacket);
-			
-				int idPak = ByteBuffer.wrap(receivedPacket, 4, 4).getInt();
-				IO.println(Integer.toString(idPak));
-
-				
-				/*if (receivedPacket.getHeader() == PacketHeaders.unknown) {
-					IO.println("Client: " + receivedPacket.getClientId() + "\nError unknown data");
-				} else if (receivedPacket.getHeader() == PacketHeaders.command) {
-					IO.println("Client: " + receivedPacket.getMsgData());
-				}*/
+				Packet packet = new Packet(receivedPacket);
+				process_data(packet);
 				
 			} catch (Exception ex) {
-				ex.printStackTrace();
-				IO.println("Error Client Disconnected!");
+				IO.println("Client Disconnected!");
 				break;
 			}
 		}
+	}
+	
+	public void process_data(Packet packet) {
+		if (packet.getHeader() == PacketHeaders.unknown.ordinal()) {
+			IO.println("Error: client " + packet.getID() + " : has sent unknown data");
+		} else if (packet.getHeader() == PacketHeaders.command.ordinal()) {
+			
+		} else if (packet.getHeader() == PacketHeaders.questions.ordinal()) {
+			
+		} else if (packet.getHeader() == PacketHeaders.results.ordinal()) {
+			
+		} else if (packet.getHeader() == PacketHeaders.team.ordinal()) {
+			
+		}
+	}
+	
+	public void sendPacket(Packet send) {
+		try {
+			sender = new Sender(clientSocket, send);
+			exe.execute(sender);
+			
+		} catch (Exception ex) {
+			
+		}
+	}
+	
+	public void ResultsReady(boolean isReady) {
+		this.resultsReady = isReady;
 	}
 }

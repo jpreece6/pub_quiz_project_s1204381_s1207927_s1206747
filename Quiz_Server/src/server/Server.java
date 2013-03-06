@@ -8,25 +8,38 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Server {
+import quiz.Game;
 
-	private static final int NUM_CLIENTS = 20;
-	private static final ExecutorService exe = Executors.newFixedThreadPool(NUM_CLIENTS);
-	private static final ExecutorService exeGame = Executors.newSingleThreadExecutor();
+public class Server implements Runnable {
+
+	private static ExecutorService exe;
 	
 	private Runnable newClient;
-	
-	private static ArrayList<Client> clientList = new ArrayList<Client>();
 	
 	private Socket clientSocket;
 	private ServerSocket serverSocket;
 	
-	public static void main(String[] args) {
-		new Server();
+	private Game game;
+	private int current_connected = 0;
+	private int num_clients = 0;
+	
+	private Client[] clientsList;
+	
+	public Server(Game newGame, int clients) {
+		this.game = newGame;
+		this.num_clients = clients;
+		this.clientsList = new Client[clients];
+		exe  = Executors.newFixedThreadPool(clients);
 	}
 	
-	public Server() {
+	@Override
+	public void run() {
+
+		server();
 		
+	}
+	
+	public void server() {
 		try {
 			
 			serverSocket = new ServerSocket(2013);
@@ -34,19 +47,24 @@ public class Server {
 			for(;;) {
 				
 				clientSocket = serverSocket.accept();
-				newClient = new Client(clientSocket);
+				newClient = new Client(clientSocket, game);
 				exe.execute(newClient);
+				clientsList[clientsList.length - 1] = (Client) newClient;
 				
 				IO.println("Client Connected");
 				IO.println("IP:" + clientSocket.getInetAddress().toString());
 				IO.println("Port: " + Integer.toString(clientSocket.getPort()));
 				IO.print("");
+				
+				current_connected++;
+				if (current_connected == num_clients) {
+					game.all_clients_connected(true, clientsList);
+					break;
+				}
 			}
 			
 		} catch (Exception ex) {
-			//ex.printStackTrace();
+			ex.printStackTrace();
 		}
-		
 	}
-
 }
