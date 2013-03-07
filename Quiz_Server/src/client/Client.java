@@ -28,7 +28,7 @@ public class Client {
 	
 	public Client() {
 		
-		Question q = new Question("hello");
+		Question q = new Question(1);
 		packet = new Packet(10, PacketHeaders.command, q);
 		
 		try {
@@ -43,7 +43,7 @@ public class Client {
 	}
 
 	public void disconnectClient() {
-		Question q = new Question("hello");
+		Question q = new Question(1);
 		Packet Discon = new Packet(10, PacketHeaders.unknown, q);
 		sender = new Sender(clientSocket, Discon);
 	}

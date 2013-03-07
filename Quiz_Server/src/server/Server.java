@@ -4,11 +4,16 @@ import io.IO;
 
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import quiz.Game;
+/**
+ * Server listens to the network for incoming connections
+ * from clients wanting to join the quiz.
+ * @author Joshua Preece
+ * @version 1.0
+ */
 
 public class Server implements Runnable {
 
@@ -25,6 +30,11 @@ public class Server implements Runnable {
 	
 	private Client[] clientsList;
 	
+	/**
+	 * Creates a new server to listen for connecting clients
+	 * @param newGame Game handle
+	 * @param clients Number of clients to wait for
+	 */
 	public Server(Game newGame, int clients) {
 		this.game = newGame;
 		this.num_clients = clients;
@@ -58,7 +68,7 @@ public class Server implements Runnable {
 				
 				current_connected++;
 				if (current_connected == num_clients) {
-					game.all_clients_connected(true, clientsList);
+					game.all_clients_connected(clientsList);
 					break;
 				}
 			}
