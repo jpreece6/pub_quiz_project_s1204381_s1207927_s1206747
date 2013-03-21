@@ -84,6 +84,8 @@ public class Client implements Runnable {
 		} else if (packet.getHeader() == PacketHeaders.team.ordinal()) {
 			IO.println("Client " + packet.getID() + " : Name : " + packet.getData());
 			// add team name
+		} else if (packet.getHeader() == PacketHeaders.id.ordinal()) {
+			IO.println("Warning: client " + packet.getID() + " : sent id!");
 		}
 	}
 	

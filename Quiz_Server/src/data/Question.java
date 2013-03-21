@@ -1,5 +1,7 @@
 package data;
 
+import io.IO;
+
 import java.util.ArrayList;
 
 
@@ -8,6 +10,7 @@ public class Question {
 	private ArrayList<String[]> questionList = new ArrayList<String[]>();
 	private String[][] no_answers;
 	private String[][] final_list;
+	private ArrayList<String> answers = new ArrayList<String>();
 	
 	/**
 	 * Creates a new Question object which will load and contain the
@@ -40,6 +43,9 @@ public class Question {
 		
 	}
 	
+	/**************************************************
+	 * FIX NEED TO CORRECT REMOVAL OF ANSWERS
+	 **************************************************/
 	/**
 	 * Removes the answers from the array so that, the answers
 	 * are not sent to the client.
@@ -54,9 +60,18 @@ public class Question {
 		for (int i = 0; i < questionList.size(); i++) {
 			for (int b = 0; b < 6; b++) {
 				if (b != 0) {
+					/***********************************************
+					 * 2D ARRAY ONLY ACCESSING FIRST ARRAY ELEMENTS
+					 ***********************************************/
 					no_answers[i] = questionList.get(i);
+				} else {
+					//answers.add(questionList.get(b));
 				}
 			}
+		}
+		
+		for (int i = 0; i < answers.size(); i++) {
+			IO.println(answers.get(i));
 		}
 		
 		return no_answers;
