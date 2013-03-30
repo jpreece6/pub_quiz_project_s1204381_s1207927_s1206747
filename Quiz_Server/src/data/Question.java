@@ -43,35 +43,26 @@ public class Question {
 		
 	}
 	
-	/**************************************************
-	 * FIX NEED TO CORRECT REMOVAL OF ANSWERS
-	 **************************************************/
-	/**
+	/*
 	 * Removes the answers from the array so that, the answers
 	 * are not sent to the client.
 	 * @return Returns a 2D String of questions without answers.
 	 */
 	public String[][] removeAnswersFromList() {
-		no_answers = new String[questionList.size()][6];
+		String[][] que = convertToStringArray(questionList);
+		no_answers = new String[questionList.size()][5];
 		/**
 		 * Loops through the questionsList, if the first element
 		 * of the second array is selected don't add it to the new array.
 		 */
-		for (int i = 0; i < questionList.size(); i++) {
+		for (int i = 0; i < que.length; i++) {
 			for (int b = 0; b < 6; b++) {
 				if (b != 0) {
-					/***********************************************
-					 * 2D ARRAY ONLY ACCESSING FIRST ARRAY ELEMENTS
-					 ***********************************************/
-					no_answers[i] = questionList.get(i);
+					no_answers[i][b - 1] = que[i][b];
 				} else {
-					//answers.add(questionList.get(b));
+					answers.add(que[i][b]);
 				}
 			}
-		}
-		
-		for (int i = 0; i < answers.size(); i++) {
-			IO.println(answers.get(i));
 		}
 		
 		return no_answers;
@@ -81,10 +72,10 @@ public class Question {
 	 * Converts the Question.class ArrayList into a 2D String array.
 	 * @return Returns a 2D String array.
 	 */
-	private String[][] convertToStringArray() {
-		final_list = new String[questionList.size()][6];
-		for (int i = 0; i < questionList.size(); i++) {
-			final_list[i] = questionList.get(i);
+	private String[][] convertToStringArray(ArrayList<String[]> array) {
+		final_list = new String[array.size()][5];
+		for (int i = 0; i < array.size(); i++) {
+			final_list[i] = array.get(i);
 		}
 		
 		return final_list;
@@ -99,7 +90,7 @@ public class Question {
 		if (removeAnswers) {
 			return removeAnswersFromList();
 		}
-		return convertToStringArray();
+		return convertToStringArray(questionList);
 	}
 	
 }

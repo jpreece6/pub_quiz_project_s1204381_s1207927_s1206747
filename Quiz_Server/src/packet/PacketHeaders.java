@@ -12,5 +12,6 @@ public enum PacketHeaders {
 	questions,
 	team,
 	results,
-	id
+	id,
+	disconnect
 }

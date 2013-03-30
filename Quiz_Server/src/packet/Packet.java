@@ -126,7 +126,7 @@ public class Packet {
 		 * then insert into byteLsit.
 		 */
 		for (int i = 0; i < questions.length; i++) {
-			for (int b = 0; b < 6; b++) {
+			for (int b = 0; b < 5; b++) {
 				byteList.add(questions[i][b].getBytes());
 			}
 		}
@@ -186,7 +186,7 @@ public class Packet {
 		byte_id = new byte[4];
 		byte_header = new byte[4];
 		byte_data = new byte[PACKET_SIZE - 8];
-		// Split the bytes from data into indevidual byte arrays for easy access.
+		// Split the bytes from data into individual byte arrays for easy access.
 		System.arraycopy(data, 0, byte_id, 0, 4);
 		System.arraycopy(data, 4, byte_header, 0, 4);
 		System.arraycopy(data, 8, byte_data, 0, PACKET_SIZE - 8);

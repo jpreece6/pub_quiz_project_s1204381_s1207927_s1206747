@@ -67,6 +67,7 @@ public class Game {
 			}
 		}
 		IO.println("All clients connected!\n\nStarting Quiz...");
+		serverThread.shutdown();
 	}
 	
 	/**

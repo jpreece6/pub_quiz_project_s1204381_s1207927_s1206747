@@ -4,6 +4,7 @@ import io.IO;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -51,17 +52,25 @@ public class Client implements Runnable {
 	
 	public void listen() {
 		for (;;) {
-			
-			try {
-				
-				byte[] receivedPacket = new byte[PACKET_SIZE];
-				fromClient = new DataInputStream(clientSocket.getInputStream());
-				fromClient.read(receivedPacket);
-				Packet packet = new Packet(receivedPacket);
-				process_data(packet);
-				
-			} catch (Exception ex) {
-				IO.println("Client Disconnected!");
+			if (!Thread.currentThread().isInterrupted()) {
+				try {
+					
+					byte[] receivedPacket = new byte[PACKET_SIZE];
+					fromClient = new DataInputStream(clientSocket.getInputStream());
+					fromClient.read(receivedPacket);
+					Packet packet = new Packet(receivedPacket);
+					process_data(packet);
+					
+				} catch (Exception ex) {
+					IO.println("Client Disconnected!");
+					break;
+				}
+			} else {
+				try {
+					clientSocket.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 				break;
 			}
 		}
@@ -86,6 +95,9 @@ public class Client implements Runnable {
 			// add team name
 		} else if (packet.getHeader() == PacketHeaders.id.ordinal()) {
 			IO.println("Warning: client " + packet.getID() + " : sent id!");
+		} else if (packet.getHeader() == PacketHeaders.disconnect.ordinal()) {
+			IO.println("Client " + packet.getID() + " : has disconnected!\nReason for disconnect : " + packet.getData());
+			Thread.currentThread().interrupt();
 		}
 	}
 	
