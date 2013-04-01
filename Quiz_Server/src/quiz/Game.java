@@ -89,6 +89,7 @@ public class Game {
 		while (resultsReady == false){
 			if (results.size() == num_clients) {
 				resultsReady = true;
+				IO.println("All clients have returned their results!");
 			}
 		}
 	}
@@ -140,12 +141,45 @@ public class Game {
 	 * 
 	 * @return
 	 */
-	public String[][] process_results() {
-		String[][] quizResults = new String[results.size()][num_questions];
+	public String process_results() {
+//		String[][] quizResults = new String[results.size()][num_questions];
+//		for (int i = 0; i < results.size(); i++) {
+//			quizResults[i] = results.get(i);
+//		}
+//		
+//		return quizResults;
+		
+		String winner = "";
+		ArrayList<String> answers = new ArrayList<String>();
+		ArrayList<String[]> processed_answers = new ArrayList<String[]>();
+		
+		answers = question.getAnswers();
+		
 		for (int i = 0; i < results.size(); i++) {
-			quizResults[i] = results.get(i);
+			
+			String[] one_result = new String[2];
+			int num_correct = 0;
+			
+			// **** FIX REMOVE CLIENT ID ****
+			for (int b = 0; b < num_questions; b++) {
+				if (b != 0) {
+					if (results.get(i)[b] == answers.get(b)) {
+						num_correct++;
+					}
+				}
+			}
+			
+			one_result[0] = results.get(i)[0];
+			one_result[1] = Integer.toString(num_correct);
+			processed_answers.add(one_result);
 		}
 		
-		return quizResults;
+		int current = 0;
+		for (int i = 0; i < processed_answers.size(); i++) {
+			 //current = Math.max(current, processed_answers.get(i));
+		}
+		
+		
+		return null;
 	}
 }

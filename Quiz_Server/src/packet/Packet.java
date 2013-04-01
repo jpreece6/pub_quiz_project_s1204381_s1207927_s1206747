@@ -244,4 +244,13 @@ public class Packet {
 		System.arraycopy(data, 0, new_data, 0, end_of_data);
 		return new String(new_data);
 	}
+	
+	public String[] returnDataArray() {
+		String data = trim(byte_data);
+		String[] split_data = new String[data.split(",").length];
+		
+		split_data = data.split(",");
+		
+		return split_data;
+	}
 }

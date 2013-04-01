@@ -93,4 +93,12 @@ public class Question {
 		return convertToStringArray(questionList);
 	}
 	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public ArrayList<String> getAnswers() {
+		return answers;
+	}
 }

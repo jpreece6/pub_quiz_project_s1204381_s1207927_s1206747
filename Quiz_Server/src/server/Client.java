@@ -89,7 +89,7 @@ public class Client implements Runnable {
 			IO.println("Error: client " + packet.getID() + " : sent questions!"); 
 		} else if (packet.getHeader() == PacketHeaders.results.ordinal()) {
 			IO.println("Client : " + packet.getID() + " : has returned their results!");
-			// add result
+			game.addResult(packet.returnDataArray());
 		} else if (packet.getHeader() == PacketHeaders.team.ordinal()) {
 			IO.println("Client " + packet.getID() + " : Name : " + packet.getData());
 			// add team name
