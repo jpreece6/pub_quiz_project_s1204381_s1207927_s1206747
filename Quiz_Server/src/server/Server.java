@@ -4,6 +4,8 @@ import io.IO;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -28,7 +30,7 @@ public class Server implements Runnable {
 	private int current_connected = 0;
 	private int num_clients = 0;
 	
-	private Client[] clientsList;
+	private ArrayList<Client> clientsList;
 	
 	/**
 	 * Creates a new server to listen for connecting clients
@@ -38,7 +40,7 @@ public class Server implements Runnable {
 	public Server(Game newGame, int clients) {
 		this.game = newGame;
 		this.num_clients = clients;
-		this.clientsList = new Client[clients];
+		this.clientsList = new ArrayList<Client>();
 		exe  = Executors.newFixedThreadPool(clients);
 	}
 	
@@ -57,9 +59,11 @@ public class Server implements Runnable {
 			for(;;) {
 				
 				clientSocket = serverSocket.accept();
-				newClient = new Client(clientSocket, game);
+				clientSocket.setTcpNoDelay(true);
+				newClient = new Client(clientSocket, game, gen_client_id());
 				exe.execute(newClient);
-				clientsList[clientsList.length - 1] = (Client) newClient;
+				clientsList.add((Client) newClient);
+	
 				
 				IO.println("Client Connected");
 				IO.println("IP:" + clientSocket.getInetAddress().toString());
@@ -76,5 +80,9 @@ public class Server implements Runnable {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+	}
+	
+	private int gen_client_id() {
+		return current_connected + 4;
 	}
 }

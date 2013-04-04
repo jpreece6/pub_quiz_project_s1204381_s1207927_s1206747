@@ -21,12 +21,12 @@ import data.Question;
 
 public class Game {
 
-	private int num_clients = 1;
+	private int num_clients = 2;
 	private int num_questions = 2;
 	private ArrayList<String[]> results = new ArrayList<String[]>();
 	private String[] readyResults;
 	
-	private Client[] clientsList;
+	private ArrayList<Client> clientsList;
 	private Question question;
 	
 	private boolean resultsReady = false;
@@ -44,11 +44,13 @@ public class Game {
 		// menu get num clients and num questions
 		server = new Server(this, num_clients);
 		serverThread.execute(server);
-		clientsList = new Client[num_clients];
+		clientsList = new ArrayList<Client>();
 		question = new Question(num_questions);
 		wait_for_connecting_clients();
 		send_questions(question);
 		wait_for_results();
+		
+		
 		process_results();
 		
 	}
@@ -77,8 +79,15 @@ public class Game {
 	public void send_questions(Question questions) {
 		Packet questionPacket = new Packet(1, PacketHeaders.questions, questions);
 		// Loops through all connected clients and sends the packet.
-		for (int i = 0; i < clientsList.length; i++) {
-			clientsList[i].sendPacket(questionPacket);
+		
+		try {
+			// Wait 1 second for last client to be established
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		for (int i = 0; i < clientsList.size(); i++) {
+			clientsList.get(i).sendPacket(questionPacket);
 		}
 	}
 	
@@ -108,8 +117,8 @@ public class Game {
 	public void sendResults() {
 		Packet resultsPacket = new Packet(1, PacketHeaders.results, readyResults);
 		// Loops through all connected clients and sends the packet.
-		for (int i = 0; i < clientsList.length; i++) {
-			clientsList[i].sendPacket(resultsPacket);
+		for (int i = 0; i < clientsList.size(); i++) {
+			clientsList.get(i).sendPacket(resultsPacket);
 		}
 	}
 	
@@ -126,13 +135,13 @@ public class Game {
 	 * and sets all_connected = true
 	 * @param clientHandleList List of clients that are connected to the server
 	 */
-	public void all_clients_connected(Client[] clientHandleList) {
+	public void all_clients_connected(ArrayList<Client> clientHandleList) {
 		/*
 		 *  Loops through all connected clients adds them to the clientsList
 		 *  and sets all_connected.
 		 */
-		for (int i = 0; i < clientHandleList.length; i++) {
-			clientsList[clientsList.length - 1] = clientHandleList[i]; 
+		for (int i = 0; i < clientHandleList.size(); i++) {
+			clientsList.add(clientHandleList.get(i)); 
 		}
 		this.all_connected = true;
 	}
@@ -179,7 +188,10 @@ public class Game {
 			 //current = Math.max(current, processed_answers.get(i));
 		}
 		
-		
 		return null;
+	}
+	
+	public void DisconectClient() {
+		
 	}
 }

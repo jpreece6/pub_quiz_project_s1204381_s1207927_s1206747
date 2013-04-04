@@ -29,7 +29,7 @@ public class Client {
 	public Client() {
 		
 		Question q = new Question(1);
-		packet = new Packet(10, PacketHeaders.command, q);
+		packet = new Packet(10, PacketHeaders.unknown, q);
 		
 		try {
 			clientSocket = new Socket(serverAddress, serverPort);

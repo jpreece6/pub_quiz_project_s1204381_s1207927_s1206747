@@ -33,19 +33,23 @@ public class Client implements Runnable {
 	private Game game;
 	private boolean resultsReady = false;
 	
+	private int clientID = 0;
+	
 	/**
 	 * Creates a new client
 	 * @param client Client socket to use to communicate.
 	 * @param newGame Game handle to communicate with the Game thread
 	 */
-	public Client(Socket client, Game newGame) {
+	public Client(Socket client, Game newGame, int id) {
 		this.clientSocket = client;
 		this.game = newGame;
+		this.clientID = id;
 	}
 
 	@Override
 	public void run() {
-
+		
+		sendClientID();
 		listen();
 		
 	}
@@ -83,8 +87,6 @@ public class Client implements Runnable {
 	public void process_data(Packet packet) {
 		if (packet.getHeader() == PacketHeaders.unknown.ordinal()) {
 			IO.println("Error: client " + packet.getID() + " : has sent unknown data");
-		} else if (packet.getHeader() == PacketHeaders.command.ordinal()) {
-			IO.println("Error: client " + packet.getID() + " : attempted to issue a command!");
 		} else if (packet.getHeader() == PacketHeaders.questions.ordinal()) {
 			IO.println("Error: client " + packet.getID() + " : sent questions!"); 
 		} else if (packet.getHeader() == PacketHeaders.results.ordinal()) {
@@ -117,5 +119,16 @@ public class Client implements Runnable {
 	
 	public void ResultsReady(boolean isReady) {
 		this.resultsReady = isReady;
+	}
+	
+	public void sendClientID() {
+		try {
+			Packet packet = new Packet(1, PacketHeaders.id, Integer.toString(clientID));
+			sender = new Sender(clientSocket, packet);
+			exe.execute(sender);
+		
+		} catch (Exception ex) {
+			
+		}
 	}
 }

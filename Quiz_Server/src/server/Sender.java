@@ -16,7 +16,7 @@ import packet.Packet;
 public class Sender implements Runnable {
 
 	private Packet data;
-	private DataOutputStream toServer;
+	private DataOutputStream toClient;
 	private Socket clientSocket;
 	
 	/**
@@ -34,9 +34,10 @@ public class Sender implements Runnable {
 
 		try {
 			
-			toServer = new DataOutputStream(clientSocket.getOutputStream());
+			toClient = new DataOutputStream(clientSocket.getOutputStream());
 			Packet packet = data;
-			toServer.write(packet.getDataForTransmit());
+			toClient.write(packet.getDataForTransmit());
+			toClient.flush();
 			IO.println("Packet Sent!");
 			
 		} catch (Exception ex) {
