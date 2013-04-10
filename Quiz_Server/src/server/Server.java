@@ -29,6 +29,7 @@ public class Server implements Runnable {
 	private Game game;
 	private int current_connected = 0;
 	private int num_clients = 0;
+	private int port = 2013;
 	
 	private ArrayList<Client> clientsList;
 	
@@ -37,9 +38,10 @@ public class Server implements Runnable {
 	 * @param newGame Game handle
 	 * @param clients Number of clients to wait for
 	 */
-	public Server(Game newGame, int clients) {
+	public Server(Game newGame, int clients, int serverPort) {
 		this.game = newGame;
 		this.num_clients = clients;
+		this.port = serverPort;
 		this.clientsList = new ArrayList<Client>();
 		exe  = Executors.newFixedThreadPool(clients);
 	}
@@ -54,7 +56,7 @@ public class Server implements Runnable {
 	public void server() {
 		try {
 			
-			serverSocket = new ServerSocket(2013);
+			serverSocket = new ServerSocket(port);
 			
 			for(;;) {
 				

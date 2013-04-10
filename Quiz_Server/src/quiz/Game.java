@@ -21,6 +21,9 @@ import data.Question;
 
 public class Game {
 
+	private static final String APP_NAME = "Pub Quiz Server";
+	private static final String VERSION = "1.0";
+	
 	private int num_clients = 2;
 	private int num_questions = 2;
 	private ArrayList<String[]> results = new ArrayList<String[]>();
@@ -34,14 +37,19 @@ public class Game {
 	private ExecutorService serverThread = Executors.newSingleThreadExecutor();
 	private Runnable server;
 	
+	private boolean gameStart = false;
+	private int serverPort = 2013;
+	
 	public static void main(String[] args) {
 		new Game();
 	}
 	
 	public Game() {
 		
+		Menu.displayMenu(this, APP_NAME, VERSION);
+		
 		// menu get num clients and num questions
-		server = new Server(this, num_clients);
+		server = new Server(this, num_clients, serverPort);
 		serverThread.execute(server);
 		clientsList = new ArrayList<Client>();
 		question = new Question(num_questions);
@@ -218,5 +226,37 @@ public class Game {
 		for (int i = 0; i < clientsList.size(); i++) {
 			clientsList.get(i).sendPacket(packet);
 		}
+	}
+	
+	public void set_Number_of_Clients(int n_clients) {
+		this.num_clients = n_clients;
+	}
+	
+	public void set_Number_of_Questions(int n_Questions) {
+		this.num_questions = n_Questions;
+	}
+	
+	public void set_Port_Number(int n_port) {
+		this.serverPort = n_port;
+	}
+	
+	public int get_Number_of_Clients() {
+		return num_clients;
+	}
+	
+	public int get_Number_of_Questions() {
+		return num_questions;
+	}
+	
+	public int get_Port_Number() {
+		return serverPort;
+	}
+	
+	public boolean get_game_start() {
+		return gameStart;
+	}
+	
+	public void set_game_start(boolean b_start) {
+		gameStart = b_start;
 	}
 }
