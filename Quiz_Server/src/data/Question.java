@@ -21,14 +21,14 @@ public class Question {
 		String[] test1 = new String[6];
 		String[] test2 = new String[6];
 		
-		test1[0] = "$~Windows";
+		test1[0] = "2";
 		test1[1] = "$~Which OS was built my Microsoft?";
 		test1[2] = "$~OSX";
 		test1[3] = "$~Linux";
 		test1[4] = "$~Windows";
 		test1[5] = "$~DOS";
 		
-		test2[0] = "$~JavaScript";
+		test2[0] = "2";
 		test2[1] = "$~Which of these is not a programming language";
 		test2[2] = "$~Java";
 		test2[3] = "$~C++";

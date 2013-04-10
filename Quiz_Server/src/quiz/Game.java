@@ -21,7 +21,7 @@ import data.Question;
 
 public class Game {
 
-	private int num_clients = 2;
+	private int num_clients = 1;
 	private int num_questions = 2;
 	private ArrayList<String[]> results = new ArrayList<String[]>();
 	private String[] readyResults;
@@ -52,6 +52,7 @@ public class Game {
 		
 		
 		process_results();
+		sendResults();
 		
 	}
 	
@@ -115,7 +116,7 @@ public class Game {
 	 * Sends the compiled results to all connected clients
 	 */
 	public void sendResults() {
-		Packet resultsPacket = new Packet(1, PacketHeaders.results, readyResults);
+		Packet resultsPacket = new Packet(1, PacketHeaders.results, "4");
 		// Loops through all connected clients and sends the packet.
 		for (int i = 0; i < clientsList.size(); i++) {
 			clientsList.get(i).sendPacket(resultsPacket);
@@ -150,7 +151,7 @@ public class Game {
 	 * 
 	 * @return
 	 */
-	public String process_results() {
+	public ArrayList<String> process_results() {
 //		String[][] quizResults = new String[results.size()][num_questions];
 //		for (int i = 0; i < results.size(); i++) {
 //			quizResults[i] = results.get(i);
@@ -158,7 +159,7 @@ public class Game {
 //		
 //		return quizResults;
 		
-		String winner = "";
+		ArrayList<String> winners = new ArrayList<String>() ;
 		ArrayList<String> answers = new ArrayList<String>();
 		ArrayList<String[]> processed_answers = new ArrayList<String[]>();
 		
@@ -169,10 +170,9 @@ public class Game {
 			String[] one_result = new String[2];
 			int num_correct = 0;
 			
-			// **** FIX REMOVE CLIENT ID ****
 			for (int b = 0; b < num_questions; b++) {
 				if (b != 0) {
-					if (results.get(i)[b] == answers.get(b)) {
+					if (results.get(i)[b].equals(answers.get(b - 1))) {
 						num_correct++;
 					}
 				}
@@ -185,13 +185,23 @@ public class Game {
 		
 		int current = 0;
 		for (int i = 0; i < processed_answers.size(); i++) {
-			 //current = Math.max(current, processed_answers.get(i));
+			 current = Math.max(current, Integer.parseInt((processed_answers.get(i)[1])));
 		}
 		
-		return null;
+		
+		for (int i = 0; i < processed_answers.size(); i++) {
+			if (processed_answers.get(i)[1].equals(Integer.toString(current))) {
+				winners.add(processed_answers.get(i)[0]);
+			}
+		}
+		
+		return winners;
 	}
 	
 	public void DisconectClient() {
-		
+		Packet packet = new Packet(1, PacketHeaders.disconnect, "Quiz Finished!");
+		for (int i = 0; i < clientsList.size(); i++) {
+			clientsList.get(i).sendPacket(packet);
+		}
 	}
 }
