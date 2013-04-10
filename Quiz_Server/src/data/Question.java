@@ -1,7 +1,5 @@
 package data;
 
-import io.IO;
-
 import java.util.ArrayList;
 
 
@@ -39,7 +37,7 @@ public class Question {
 		questionList.add(test2);
 	}
 	
-	public void loadQuestions(String path) {
+	public void loadQuestions(String path, int num_questions) {
 		
 	}
 	

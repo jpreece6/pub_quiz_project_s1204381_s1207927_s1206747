@@ -21,10 +21,9 @@ import data.Question;
 
 public class Game {
 
-	private int num_clients = 1;
+	private int num_clients = 2;
 	private int num_questions = 2;
 	private ArrayList<String[]> results = new ArrayList<String[]>();
-	private String[] readyResults;
 	
 	private ArrayList<Client> clientsList;
 	private Question question;
@@ -50,9 +49,7 @@ public class Game {
 		send_questions(question);
 		wait_for_results();
 		
-		
-		process_results();
-		sendResults();
+		sendResults(process_results());
 		
 	}
 	
@@ -115,8 +112,8 @@ public class Game {
 	/**
 	 * Sends the compiled results to all connected clients
 	 */
-	public void sendResults() {
-		Packet resultsPacket = new Packet(1, PacketHeaders.results, "4");
+	public void sendResults(String[] final_results) {
+		Packet resultsPacket = new Packet(1, PacketHeaders.results, final_results);
 		// Loops through all connected clients and sends the packet.
 		for (int i = 0; i < clientsList.size(); i++) {
 			clientsList.get(i).sendPacket(resultsPacket);
@@ -148,56 +145,74 @@ public class Game {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Processes the results received for this quiz session
+	 * @return String array with a winner (or winners = draw)
 	 */
-	public ArrayList<String> process_results() {
-//		String[][] quizResults = new String[results.size()][num_questions];
-//		for (int i = 0; i < results.size(); i++) {
-//			quizResults[i] = results.get(i);
-//		}
-//		
-//		return quizResults;
+	public String[] process_results() {
 		
 		ArrayList<String> winners = new ArrayList<String>() ;
 		ArrayList<String> answers = new ArrayList<String>();
 		ArrayList<String[]> processed_answers = new ArrayList<String[]>();
+		String[] final_list = {};
 		
-		answers = question.getAnswers();
-		
-		for (int i = 0; i < results.size(); i++) {
+		try {
+
+			answers = question.getAnswers();
 			
-			String[] one_result = new String[2];
-			int num_correct = 0;
-			
-			for (int b = 0; b < num_questions; b++) {
-				if (b != 0) {
-					if (results.get(i)[b].equals(answers.get(b - 1))) {
-						num_correct++;
+			for (int i = 0; i < results.size(); i++) {
+				
+				String[] one_result = new String[2];
+				int num_correct = 0;
+				
+				// check for correct answers
+				for (int b = 0; b <= num_questions; b++) {
+					if (b != 0) {
+						if (results.get(i)[b].equals(answers.get(b - 1))) {
+							num_correct++;
+						}
 					}
+				}
+				
+				// apply client id to total correct answers
+				one_result[0] = results.get(i)[0];
+				one_result[1] = Integer.toString(num_correct);
+				processed_answers.add(one_result);
+			}
+			
+			// calculate the team with the most points
+			int current = 0;
+			for (int i = 0; i < processed_answers.size(); i++) {
+				 current = Math.max(current, Integer.parseInt((processed_answers.get(i)[1])));
+			}
+			
+			// add the client with the highest number of correct answers to the winners list
+			for (int i = 0; i < processed_answers.size(); i++) {
+				if (processed_answers.get(i)[1].equals(Integer.toString(current))) {
+					winners.add(processed_answers.get(i)[0]);
 				}
 			}
 			
-			one_result[0] = results.get(i)[0];
-			one_result[1] = Integer.toString(num_correct);
-			processed_answers.add(one_result);
-		}
-		
-		int current = 0;
-		for (int i = 0; i < processed_answers.size(); i++) {
-			 current = Math.max(current, Integer.parseInt((processed_answers.get(i)[1])));
-		}
-		
-		
-		for (int i = 0; i < processed_answers.size(); i++) {
-			if (processed_answers.get(i)[1].equals(Integer.toString(current))) {
-				winners.add(processed_answers.get(i)[0]);
+			if (current == 0) {
+				winners.add("Draw all teams: 0 correct answers!");
+			} else if (winners.size() > 1) {
+				winners.add("Draw");
 			}
+			
+			// convert the array list to a string array ready for the packet
+			final_list = new String[winners.size()];
+			for (int i = 0; i < winners.size(); i++) {
+					final_list[i] = winners.get(i) + ",";
+			}
+			
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
-		
-		return winners;
+		return final_list;
 	}
 	
+	/**
+	 * Sends a disconnect command to all clients
+	 */
 	public void DisconectClient() {
 		Packet packet = new Packet(1, PacketHeaders.disconnect, "Quiz Finished!");
 		for (int i = 0; i < clientsList.size(); i++) {
