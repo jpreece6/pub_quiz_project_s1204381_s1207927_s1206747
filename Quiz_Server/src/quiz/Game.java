@@ -51,8 +51,10 @@ public class Game {
 		// menu get num clients and num questions
 		server = new Server(this, num_clients, serverPort);
 		serverThread.execute(server);
+		
 		clientsList = new ArrayList<Client>();
 		question = new Question(num_questions);
+		
 		wait_for_connecting_clients();
 		send_questions(question);
 		wait_for_results();
