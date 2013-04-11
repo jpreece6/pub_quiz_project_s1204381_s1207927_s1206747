@@ -6,6 +6,13 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 
+/**
+ * Basic framework for the question, handles loading
+ * and removal of answers
+ * @author Joshua Preece
+ * @version 1.2
+ *
+ */
 
 public class Question {
 
@@ -37,12 +44,16 @@ public class Question {
 			BufferedReader read = new BufferedReader(new FileReader(path));
 			String current = "";
 			
-			String[] question = new String[6]; 
+			String[] question = {};
 			int index = 0;
 			int full_index = 0;
 			
 			
 			while ((current = read.readLine()) != null) {
+				
+				if (index == 0) {
+					question = new String[6]; 
+				}
 				
 				if (full_index != (num_questions * 6)) {
 					if (index <= 5) {
@@ -51,6 +62,8 @@ public class Question {
 					} else {
 						questionList.add(question);
 						index = 0;
+						
+						question = new String[6]; 
 						
 						question[index] = current;
 						index++;
@@ -62,6 +75,8 @@ public class Question {
 				full_index++;
 			}
 			
+			// add the last question to the list
+			questionList.add(question);
 			IO.println("Questions Loaded!");
 			read.close();
 			

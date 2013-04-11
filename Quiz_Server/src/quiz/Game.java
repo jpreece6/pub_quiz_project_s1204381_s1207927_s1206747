@@ -15,7 +15,7 @@ import data.Question;
 /**
  * Game is the main class which handles each stage/step of the server.
  * @author Joshua Preece
- * @version 1.0
+ * @version 1.2
  *
  */
 
@@ -25,7 +25,7 @@ public class Game {
 	private static final String VERSION = "1.0";
 	
 	private int num_clients = 2;
-	private int num_questions = 3;
+	private int num_questions = 2;
 	private ArrayList<String[]> results = new ArrayList<String[]>();
 	
 	private ArrayList<Client> clientsList;
@@ -198,7 +198,11 @@ public class Game {
 			// add the client with the highest number of correct answers to the winners list
 			for (int i = 0; i < processed_answers.size(); i++) {
 				if (processed_answers.get(i)[1].equals(Integer.toString(current))) {
-					winners.add(processed_answers.get(i)[0]);
+					for (int b = 0; b < clientsList.size(); b++) {
+						if (clientsList.get(b).get_ClientID() == Integer.parseInt(processed_answers.get(i)[0])) {
+							winners.add(clientsList.get(b).get_TeamName());
+						}
+					}
 				}
 			}
 			

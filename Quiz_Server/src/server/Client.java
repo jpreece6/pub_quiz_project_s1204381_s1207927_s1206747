@@ -142,4 +142,12 @@ public class Client implements Runnable {
 	public String get_TeamName() {
 		return teamName;
 	}
+	
+	/**
+	 * Gest the clients id
+	 * @return int client id
+	 */
+	public int get_ClientID() {
+		return clientID;
+	}
 }

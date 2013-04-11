@@ -1,15 +1,15 @@
 package packet;
 
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
+
 import data.Question;
 
 /**
  *  Packet handles the storage of data to be sent to the servers
  *  clients and conversion of data into and from bytes.
  *  @author Joshua Preece
- *  @version 1.0
+ *  @version 1.5
  */
 
 public class Packet {

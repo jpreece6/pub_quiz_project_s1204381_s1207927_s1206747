@@ -5,7 +5,7 @@ import io.IO;
 import java.util.Scanner;
 
 /**
- * 
+ * Handles the display of a menu system
  * @author Joshua Preece
  * @version 1.0
  *
@@ -56,9 +56,7 @@ public class Menu {
 	private static int getInput() {
 		try {
 			Scanner scan = new Scanner(System.in);
-			int value = scan.nextInt();
-			scan.close();
-			return value;
+			return scan.nextInt();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return 0;
@@ -80,7 +78,7 @@ public class Menu {
 			IO.println("Clients: " + handle.get_Number_of_Clients());
 			IO.println("Questions: " + handle.get_Number_of_Questions());
 			IO.println("Port: " + handle.get_Port_Number());
-			IO.println("Back to Main Menu 1 : ");
+			IO.println("Back to Main Menu : 1 ");
 			
 			int choice = getInput();
 			if (choice > 0 && choice <= 1) {
@@ -107,12 +105,13 @@ public class Menu {
 			
 			clear_screen();
 			
-			IO.println("Possible Number of Clients : 1 ");
-			IO.println("Possible Number of Questions : 2");
-			IO.println("Port Number : 3");
+			IO.println("Possible Number of Clients (" + handle.get_Number_of_Clients() + ") : 1 ");
+			IO.println("Possible Number of Questions (" + handle.get_Number_of_Questions() + ") : 2");
+			IO.println("Port Number (" + handle.get_Port_Number() + ") : 3");
+			IO.println("Back to Main Menu : 4 ");
 			
 			int choice = getInput();
-			if (choice > 0 && choice <= 3) {
+			if (choice > 0 && choice <= 4) {
 				if (choice == 1) {
 					set_Number_of_Clients(handle);
 				} else if (choice == 2) {
