@@ -31,6 +31,7 @@ public class Client implements Runnable {
 	private Game game;
 	
 	private int clientID = 0;
+	private String teamName = "";
 	
 	/**
 	 * Creates a new client
@@ -96,7 +97,7 @@ public class Client implements Runnable {
 			game.addResult(packet.returnDataArray());
 		} else if (packet.getHeader() == PacketHeaders.team.ordinal()) {
 			IO.println("Client " + packet.getID() + " : Name : " + packet.getData());
-			// add team name
+			teamName = packet.getData();
 		} else if (packet.getHeader() == PacketHeaders.id.ordinal()) {
 			IO.println("Warning: client " + packet.getID() + " : sent id!");
 		} else if (packet.getHeader() == PacketHeaders.disconnect.ordinal()) {
@@ -115,7 +116,7 @@ public class Client implements Runnable {
 			exe.execute(sender);
 			
 		} catch (Exception ex) {
-			
+			ex.printStackTrace();
 		}
 	}
 	
@@ -130,7 +131,15 @@ public class Client implements Runnable {
 			exe.execute(sender);
 		
 		} catch (Exception ex) {
-			
+			ex.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Gets a team name
+	 * @return string team name
+	 */
+	public String get_TeamName() {
+		return teamName;
 	}
 }
