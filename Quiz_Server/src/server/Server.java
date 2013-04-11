@@ -5,7 +5,6 @@ import io.IO;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -53,6 +52,11 @@ public class Server implements Runnable {
 		
 	}
 	
+	/**
+	 * Main server thread, this method handles the connection of
+	 * new clients connecting to the server. Once connected this thread
+	 * creates a new thread to that client can be handle on a thread of its own.
+	 */
 	public void server() {
 		try {
 			
@@ -84,6 +88,10 @@ public class Server implements Runnable {
 		}
 	}
 	
+	/**
+	 * Generates a id for a new connected client 
+	 * @return client id
+	 */
 	private int gen_client_id() {
 		return current_connected + 4;
 	}

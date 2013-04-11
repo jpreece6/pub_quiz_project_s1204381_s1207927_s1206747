@@ -25,7 +25,7 @@ public class Game {
 	private static final String VERSION = "1.0";
 	
 	private int num_clients = 2;
-	private int num_questions = 2;
+	private int num_questions = 3;
 	private ArrayList<String[]> results = new ArrayList<String[]>();
 	
 	private ArrayList<Client> clientsList;
@@ -230,34 +230,70 @@ public class Game {
 		}
 	}
 	
+	/**
+	 * Sets the number of clients able to connect and participate in
+	 * this quiz session.
+	 * @param n_clients int value number of clients to connect
+	 */
 	public void set_Number_of_Clients(int n_clients) {
 		this.num_clients = n_clients;
 	}
 	
+	/**
+	 * Sets the number of questions that need to be loaded and
+	 * used within this quiz session.
+	 * @param n_Questions int value number of questions
+	 */
 	public void set_Number_of_Questions(int n_Questions) {
 		this.num_questions = n_Questions;
 	}
 	
+	/**
+	 * Sets the port number for the server to listen to, each client
+	 * will have to be configured to listen to this specified port numbrt
+	 * @param n_port int value port number to listen to
+	 */
 	public void set_Port_Number(int n_port) {
 		this.serverPort = n_port;
 	}
 	
+	/**
+	 * Gets the number of clients for this quiz session
+	 * @return int value number of clients
+	 */
 	public int get_Number_of_Clients() {
 		return num_clients;
 	}
 	
+	/**
+	 * Gets the number of questions that this quiz will
+	 * consist of
+	 * @return int value of questions being used
+	 */
 	public int get_Number_of_Questions() {
 		return num_questions;
 	}
 	
+	/**
+	 * Gets the port number this server is listening to
+	 * @return int value port number
+	 */
 	public int get_Port_Number() {
 		return serverPort;
 	}
 	
+	/**
+	 * Gets whether the quiz session should begin
+	 * @return boolean value start session
+	 */
 	public boolean get_game_start() {
 		return gameStart;
 	}
 	
+	/**
+	 * Sets gameStart to start the quiz
+	 * @param b_start boolean start quiz (true)
+	 */
 	public void set_game_start(boolean b_start) {
 		gameStart = b_start;
 	}

@@ -1,5 +1,9 @@
 package data;
 
+import io.IO;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
 
 
@@ -16,28 +20,54 @@ public class Question {
 	 * @param num_questions Number of questions to load.
 	 */
 	public Question(int num_questions) {
-		String[] test1 = new String[6];
-		String[] test2 = new String[6];
 		
-		test1[0] = "2";
-		test1[1] = "$~Which OS was built my Microsoft?";
-		test1[2] = "$~OSX";
-		test1[3] = "$~Linux";
-		test1[4] = "$~Windows";
-		test1[5] = "$~DOS";
-		
-		test2[0] = "2";
-		test2[1] = "$~Which of these is not a programming language";
-		test2[2] = "$~Java";
-		test2[3] = "$~C++";
-		test2[4] = "$~JavaScript";
-		test2[5] = "$~C#";
-		
-		questionList.add(test1);
-		questionList.add(test2);
+		loadQuestions(Question.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "questions/questions.txt", num_questions);
+	
 	}
 	
+	/**
+	 * Loads questions for the quiz from a text file (each question is 6 lines)
+	 * @param path to the text file containing the questions
+	 * @param num_questions number of questions to load from the text file
+	 */
 	public void loadQuestions(String path, int num_questions) {
+		
+		try {
+			
+			BufferedReader read = new BufferedReader(new FileReader(path));
+			String current = "";
+			
+			String[] question = new String[6]; 
+			int index = 0;
+			int full_index = 0;
+			
+			
+			while ((current = read.readLine()) != null) {
+				
+				if (full_index != (num_questions * 6)) {
+					if (index <= 5) {
+						question[index] = current;
+						index++;
+					} else {
+						questionList.add(question);
+						index = 0;
+						
+						question[index] = current;
+						index++;
+					}
+				} else {
+					break;
+				}
+				
+				full_index++;
+			}
+			
+			IO.println("Questions Loaded!");
+			read.close();
+			
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 		
 	}
 	
