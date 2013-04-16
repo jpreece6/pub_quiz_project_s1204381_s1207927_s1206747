@@ -2,14 +2,14 @@ package data;
 
 import io.IO;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * Basic framework for the question, handles loading
  * and removal of answers
- * @author Joshua Preece
+ * @author Joshua Preece & Jack Mills
  * @version 1.2
  *
  */
@@ -40,45 +40,23 @@ public class Question {
 	public void loadQuestions(String path, int num_questions) {
 		
 		try {
-			
-			BufferedReader read = new BufferedReader(new FileReader(path));
-			String current = "";
-			
-			String[] question = {};
-			int index = 0;
-			int full_index = 0;
-			
-			
-			while ((current = read.readLine()) != null) {
 				
-				if (index == 0) {
-					question = new String[6]; 
+	    	Scanner reader = new Scanner(new File(path));
+			
+			for(int i = 0;i < num_questions; i++){
+				if(reader.hasNextLine()){
+					String input = reader.nextLine();
+					String[] singleQuestion = input.split(",");
+					questionList.add(singleQuestion);
+				}else{
+					IO.println("Error :" + num_questions + " questions not available");
+					System.exit(0);
 				}
-				
-				if (full_index != (num_questions * 6)) {
-					if (index <= 5) {
-						question[index] = current;
-						index++;
-					} else {
-						questionList.add(question);
-						index = 0;
-						
-						question = new String[6]; 
-						
-						question[index] = current;
-						index++;
-					}
-				} else {
-					break;
-				}
-				
-				full_index++;
-			}
+			}	
 			
-			// add the last question to the list
-			questionList.add(question);
 			IO.println("Questions Loaded!");
-			read.close();
+			reader.close();	
+			
 			
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -138,8 +116,8 @@ public class Question {
 	
 	
 	/**
-	 * 
-	 * @return
+	 * Gets the answers that have been removed from the questions array
+	 * @return ArrayList String with answers
 	 */
 	public ArrayList<String> getAnswers() {
 		return answers;
