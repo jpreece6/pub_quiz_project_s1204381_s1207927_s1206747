@@ -11,7 +11,6 @@ import packet.PacketHeaders;
 import server.Client;
 import server.Server;
 import data.Question;
-import data.QuestionController;
 
 /**
  * Game is the main class which handles each stage/step of the server.
@@ -30,7 +29,7 @@ public class Game {
 	private ArrayList<String[]> results = new ArrayList<String[]>();
 	
 	private ArrayList<Client> clientsList;
-	private QuestionController objQuestionController;
+	private Question question;
 	
 	private boolean resultsReady = false;
 	private boolean all_connected = false;
@@ -54,8 +53,7 @@ public class Game {
 		serverThread.execute(server);
 		
 		clientsList = new ArrayList<Client>();
-		objQuestionController = new QuestionController();
-		objQuestionController.loadQuestions();
+		question = new Question(num_questions);
 		
 		wait_for_connecting_clients();
 		send_questions(question);

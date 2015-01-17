@@ -5,7 +5,6 @@ import io.IO;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -94,7 +93,6 @@ public class Server implements Runnable {
 	 * @return client id
 	 */
 	private int gen_client_id() {
-		//UUID uid = UUID.randomUUID();
 		return current_connected + 4;
 	}
 }
